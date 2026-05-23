@@ -1,56 +1,55 @@
-<link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-<div class="flex-content-wrapper">
-
-<div class="site-nav">
-  <a href="./index.html" class="active">Home</a>
-  <a href="./architecture/manual.html">Architecture Overview</a>
-  <a href="./architecture/stages.html">Pipeline Stages</a>
-  <a href="./architecture/hazards.html">Hazard Resolution</a>
-  <a href="./verification/report.html">Design Verification</a>
-  <a href="./verification/fpga.html">FPGA Implementation</a>
-  <a href="./developer/guide.html">Setup Guide</a>
-</div>
-
-<div class="content-body" markdown="1">
-
-# Documentation
-
-Welcome to the technical deep-dive and user manual for the `riscv-5` processor. This documentation provides a comprehensive background on the project's design, verification, and implementation.
-
-## Project Development
-
-The `riscv-5` core is an educational yet rigorously verified implementation of the RISC-V RV32I Base Integer Instruction Set. It was designed with a focus on clean, synthesizable SystemVerilog code and strict adherence to the official ISA specifications.
-
-## Articles
-
-### 1. The Architecture Manual (Theory)
-A deep dive into the microarchitecture of the core.
-- **[Theory of Operation](./architecture/manual.html):** Theoretical anchoring to Patterson & Hennessy.
-- **[Stage Analysis](./architecture/stages.html):** Detailed breakdown of IF, ID, EX, MEM, and WB transitions.
-- **[Hazard Resolution](./architecture/hazards.html):** Forwarding, stalling, and control hazards.
-
-### 2. The Verification Report (Proof)
-Objective evidence of correctness and a narrative account of debugging resilience.
-- **[Compliance Matrix](./verification/report.html):** Formal RISCOF results for RV32I.
-- **[Hazard Handling](./verification/report.html#load-use-hazard-stall):** Timing diagrams (WaveDrom) of temporal interactions.
-
-### 3. The Setup Guide (How-To)
-Practical instructions for instantiating the core and running simulations.
-- **[Technical Onboarding](./developer/guide.html):** Toolchain setup and simulation workflow.
-- **[FPGA Integration](./verification/fpga.html):** Deployment on the Xilinx PYNQ-Z2.
-
+---
+layout: default
+title: riscv-5
+hero: true
+permalink: /
+image: /images/pipeline_complete.svg
 ---
 
-## Key References
+<section class="hero">
+  <div class="hero-text">
+    <h1>A 5-stage pipelined RISC-V core, verified and running on FPGA.</h1>
+    <p class="lede">
+      RV32I in SystemVerilog. Synthesizes on a Xilinx Zynq-7000 (PYNQ-Z2)
+      and passes {{ site.results.riscof_rv32i_pass }} of {{ site.results.riscof_rv32i_total }}
+      RISCOF compliance tests against the {{ site.results.riscof_golden_model }} golden model.
+    </p>
+    <p class="hero-links">
+      <a class="primary" href="{{ '/architecture/' | relative_url }}">Architecture</a>
+      <a href="{{ '/verification/' | relative_url }}">Verification</a>
+      <a href="https://github.com/cshieldsce/riscv-5">Source on GitHub</a>
+    </p>
+  </div>
+  <div class="hero-figure">
+    <img src="{{ '/images/pipeline_complete.svg' | relative_url }}"
+         alt="riscv-5 datapath: five pipeline stages with forwarding paths and hazard logic">
+  </div>
+</section>
 
-<div class="callout note"><span class="title">Standard Compliance</span>
-Every design decision in this core is anchored in the official <strong>RISC-V Instruction Set Manual (Volume I)</strong> and the seminal textbook <strong>Computer Organization and Design: The Hardware/Software Interface</strong> by Patterson and Hennessy.
-</div>
+{% include results-strip.html %}
 
----
-*Verified RTL. Rigorous Documentation. Silicon-Ready Design.*
+## What I built
 
-</div>
-</div>
+I built riscv-5 to learn pipelined CPU design end to end. It's an RV32I core in SystemVerilog, simulated with Icarus, verified with RISCOF against Spike, and deployed on a PYNQ-Z2.
 
-<script src="{{ '/assets/js/lightbox.js' | relative_url }}"></script>
+The microarchitecture is the classic Patterson & Hennessy 5-stage pipeline (IF, ID, EX, MEM, WB) with full forwarding, load-use stalling, and early branch resolution for JAL. Every design choice in the source, from the PC-mux priority to the forwarding multiplexer to the LUI/AUIPC ALU shortcut, has a paragraph on the architecture page explaining why it is there.
+
+## What works today
+
+- {{ site.results.riscof_rv32i_pass }} of {{ site.results.riscof_rv32i_total }} RISCOF RV32I tests pass against {{ site.results.riscof_golden_model }}.
+- {{ site.results.riscof_regression_pass }} of {{ site.results.riscof_regression_total }} regression tests pass on every commit via GitHub Actions.
+- The core synthesizes on a {{ site.results.fpga_target }} at {{ site.results.clock_target_mhz }} MHz with positive slack ({{ site.results.toolchain }}).
+- A Fibonacci test program produces the recognizable 1, 2, 3, 5, 8, 13, 21, 34 sequence on four LEDs on the board ([video on the FPGA page]({{ '/fpga/#demo' | relative_url }})).
+
+## What's not there
+
+I scoped this project to the RV32I base integer ISA and stopped there. The core does not implement the M extension (no hardware multiply or divide). It has no CSRs at all; `SYSTEM` and `FENCE` opcodes decode as NOPs, so `ecall`, `ebreak`, and the Zicsr instructions are not functional. There is no instruction or data cache, and no exception or interrupt handling.
+
+Memory is a single flat region starting at `0x0000_0000` (4 MB in simulation, 16 KB ROM on the FPGA), with a 4-bit memory-mapped LED register at `0x8000_0000` and a `tohost` test-completion address at `0x8000_1000` that the simulation harness monitors.
+
+## Where to go next
+
+- [Architecture]({{ '/architecture/' | relative_url }}) walks through the datapath, each pipeline stage, and how I resolve hazards with forwarding, stalling, and flushing.
+- [Verification]({{ '/verification/' | relative_url }}) shows the RISCOF compliance matrix and the postmortems, including a branch bug I tracked down with a Vivado ILA capture.
+- [FPGA]({{ '/fpga/' | relative_url }}) covers synthesis on the Zynq-7000, timing closure, and the hardware demo video.
+- [Setup]({{ '/setup/' | relative_url }}) is the toolchain quickstart: clone, install Icarus and RISCOF and Vivado, build, and simulate.

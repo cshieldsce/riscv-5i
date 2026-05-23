@@ -1,0 +1,20 @@
+<section class="results-strip" aria-label="Headline results">
+  <div class="result">
+    <span class="num">{{ site.results.riscof_rv32i_pass }}<span class="denom">/{{ site.results.riscof_rv32i_total }}</span></span>
+    <span class="label">RISCOF RV32I pass against {{ site.results.riscof_golden_model }}</span>
+  </div>
+  <div class="result">
+    <span class="num">{{ site.results.lut }}</span>
+    <span class="label">LUTs ({{ site.results.lut_pct }} of {{ site.results.fpga_target }})</span>
+  </div>
+  {% if site.results.fmax_mhz != "TBD" %}
+  <div class="result">
+    <span class="num">{{ site.results.fmax_mhz }}<span class="unit"> MHz</span></span>
+    <span class="label">fmax (closed at {{ site.results.clock_target_mhz }} MHz, WNS {{ site.results.wns_ns }} ns)</span>
+  </div>
+  {% endif %}
+  <div class="result">
+    <span class="num">{{ site.results.riscof_regression_pass }}<span class="denom">/{{ site.results.riscof_regression_total }}</span></span>
+    <span class="label">Regression suite on every commit</span>
+  </div>
+</section>

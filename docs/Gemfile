@@ -1,0 +1,19 @@
+source "https://rubygems.org"
+
+# Match GitHub Pages' Jekyll version so local builds behave like prod.
+# Pin to the latest jekyll 4.x; github-pages gem (older, jekyll 3.x) is
+# intentionally NOT used because we no longer rely on remote_theme.
+gem "jekyll", "~> 4.3"
+
+group :jekyll_plugins do
+  gem "jekyll-seo-tag"
+  gem "jekyll-sitemap"
+end
+
+# webrick is no longer a default gem on Ruby 3.x; needed for `jekyll serve`.
+gem "webrick", "~> 1.8"
+
+# Optional but useful when iterating locally.
+group :test do
+  gem "html-proofer", "~> 5.0"
+end

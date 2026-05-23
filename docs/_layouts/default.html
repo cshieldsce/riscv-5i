@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if page.title and page.url != "/" %}{{ page.title }} · {% endif %}{{ site.title }}</title>
+  <meta name="description" content="{{ page.description | default: site.description }}">
+  {% seo title=false %}
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body class="{% if page.sidebar %}has-sidebar{% endif %}{% if page.hero %} has-hero{% endif %}">
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+    <nav class="top-nav" aria-label="Primary">
+      {% for item in site.nav %}
+        {%- assign is_home = false -%}
+        {%- if item.url == "/" and page.url == "/" -%}{%- assign is_home = true -%}{%- endif -%}
+        {%- assign is_section = false -%}
+        {%- if item.url != "/" and page.url contains item.url -%}{%- assign is_section = true -%}{%- endif -%}
+        <a href="{{ item.url | relative_url }}"
+           {% if is_home or is_section %}class="active" aria-current="page"{% endif %}>{{ item.title }}</a>
+      {% endfor %}
+    </nav>
+  </header>
+
+  <div class="layout">
+    {% if page.sidebar == "architecture" %}
+      {%- comment -%}
+        Rendered as <details open>. Desktop CSS hides the <summary> so the
+        block looks like a static sidebar. Under 700px the summary appears
+        and users can collapse the section list.
+      {%- endcomment -%}
+      <details class="left-sidebar" open>
+        <summary><span class="sidebar-label">Architecture sections</span></summary>
+        <nav aria-label="Architecture sections">
+          {% for item in site.arch_sidebar %}
+            <a href="{{ item.url | relative_url }}"
+               {% if page.url == item.url %}class="active" aria-current="page"{% endif %}>{{ item.title }}</a>
+          {% endfor %}
+        </nav>
+      </details>
+    {% endif %}
+
+    <main class="content" id="main">
+      {{ content }}
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <p>riscv-5 · <a href="https://github.com/cshieldsce/riscv-5">github.com/cshieldsce/riscv-5</a></p>
+  </footer>
+
+  <script src="{{ '/assets/js/lightbox.js' | relative_url }}"></script>
+</body>
+</html>

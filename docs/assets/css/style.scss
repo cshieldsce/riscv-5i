@@ -1,409 +1,593 @@
 ---
 ---
-/* --- Font Imports --- */
+/* =====================================================================
+   riscv-5 docs — site styles
+   No remote theme. Self-contained palette + grid + components.
+   Breakpoints: desktop >= 701px, mobile <= 700px.
+   ===================================================================== */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap');
 
-@import "{{ site.theme }}";
-
-/* --- HEADER --- */
-header {
-  width: 280px !important;
-  flex: 0 0 280px !important;
-  position: sticky !important;
-  top: 2rem;
-  float: none !important;
-  padding-right: 0 !important;
-  overflow: visible !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+/* --- Palette + tokens ----------------------------------------------- */
+:root {
+  --bg:          #1c1c1c;
+  --bg-elev:     #232323;
+  --bg-code:     #141414;
+  --fg:          #e6e6e6;
+  --fg-muted:    #aaaaaa;
+  --fg-dim:      #888888;
+  --accent:      #e0ac77;
+  --accent-hot:  #f0c080;
+  --border:      rgba(255, 255, 255, 0.10);
+  --border-soft: rgba(255, 255, 255, 0.05);
+  --shadow-lg:   0 10px 30px rgba(0, 0, 0, 0.35);
+  --radius:      12px;
+  --radius-sm:   8px;
+  --header-h:    64px;
 }
 
-header h1 {
-  font-size: 1.15rem !important;
-  line-height: 1.4 !important;
-  margin-top: 0 !important;
-  word-break: break-word !important;
-  white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-  height: auto !important;
-}
+/* --- Reset-lite ----------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { overflow-x: hidden; }
 
-header p {
-  font-size: 0.85rem !important;
-  word-break: break-word !important;
-  white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-  line-height: 1.4 !important;
-  height: auto !important;
-}
-
-/* --- Layout Improvements --- */
-
-.wrapper {
-  max-width: 1400px !important; /* Increased width for a more spacious feel */
-  margin: 0 auto !important;
-  display: flex !important;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 40px; /* Increased gap between sidebar and content */
-  padding: 0 40px;
-}
-
-header {
-  width: 280px !important;
-  flex: 0 0 280px !important;
-  position: sticky !important;
-  top: 2rem;
-  overflow: visible !important;
-  float: none !important;
-  padding-right: 0 !important;
-  -webkit-font-smoothing: subpixel-antialiased;
-  word-wrap: break-word; /* Ensure long titles can wrap */
-  overflow-wrap: break-word;
-}
-
-header h1 {
-  font-size: 1.15rem !important;
-  line-height: 1.4 !important;
-  margin-top: 0 !important;
-  word-break: break-word !important;
-  white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-  height: auto !important;
-}
-
-header p {
-  font-size: 0.85rem !important;
-  word-break: break-word !important;
-  white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-  line-height: 1.4 !important;
-  height: auto !important;
-}
-
-section {
-  flex: 1 !important; /* Allow section to grow and fill the remainder of the 1400px */
-  width: auto !important;
-  max-width: none !important;
-  float: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: block !important; 
-}
-
-/* Create a new flex container for our custom navigation and content body */
-.flex-content-wrapper {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 0;
-  width: 100%; /* Fill the entire section */
-}
-
-/* Container for the actual markdown content */
-.content-body {
-  flex: 1;
-  min-width: 0;
-  padding-left: 40px; /* More space between side-nav and content */
-  padding-top: 1rem;
-}
-
-/* Custom Typography */
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: #1c1c1c;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg);
+  color: var(--fg);
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Link Styling */
 a {
-  color: #e0ac77;
+  color: var(--accent);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
 }
+a:hover { color: var(--accent-hot); }
 
-a:hover {
-  color: #f0c080;
+code, pre, kbd, samp { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+h1, h2, h3, h4, h5, h6 {
+  position: relative;
+  scroll-margin-top: calc(var(--header-h) + 1rem);
+  line-height: 1.25;
 }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; margin-top: 2.5rem; }
+h3 { font-size: 1.2rem; margin-top: 2rem; }
 
-/* Horizontal Rule Styling */
 hr {
   height: 1px;
   border: 0;
-  background-color: #444;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
-  margin: 4rem 0;
+  margin: 3rem 0;
+  background-image: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
 }
 
-/* --- Header Anchor Styling --- */
-h1, h2, h3, h4, h5, h6 {
-  position: relative;
-  scroll-margin-top: 5rem !important; 
+/* --- Skip link (a11y) ----------------------------------------------- */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 8px;
+  background: var(--accent);
+  color: var(--bg);
+  padding: 8px 12px;
+  border-radius: 6px;
+  z-index: 1000;
 }
+.skip-link:focus { top: 8px; }
 
-/* --- Unified Navigation Styling --- */
-
-/* Main Site Nav (Top) */
-.site-nav {
-  flex: 0 0 100%; /* Force top nav to take full width */
+/* --- Site header (top nav) ----------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 12px;
-  background: rgba(30, 30, 30, 0.9);
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: var(--header-h);
+  padding: 0 1.25rem;
+  background: rgba(28, 28, 28, 0.92);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  margin-bottom: 2rem !important;
-  margin-top: 1rem;
+  border-bottom: 1px solid var(--border);
 }
 
-.site-nav a {
-  color: #aaa;
-  font-size: 0.8rem;
+.site-header .brand {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--fg);
+  letter-spacing: 0.01em;
+}
+.site-header .brand:hover { color: var(--accent-hot); }
+
+.top-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.top-nav a {
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
   font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  color: var(--fg-muted);
   white-space: nowrap;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.top-nav a:hover {
+  background: rgba(224, 172, 119, 0.12);
+  color: var(--accent);
+}
+.top-nav a.active {
+  background: var(--accent);
+  color: var(--bg);
 }
 
-.site-nav a:hover {
-  background: rgba(224, 172, 119, 0.15);
-  color: #e0ac77;
+/* --- Layout grid ---------------------------------------------------- */
+.layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 2rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+body.has-sidebar .layout {
+  grid-template-columns: 240px 1fr;
 }
 
-.site-nav a.active {
-  background: #e0ac77;
-  color: #1c1c1c;
+.content {
+  min-width: 0;
 }
 
-/* Side Navigation (Stages, Hazards, FPGA) */
+/* --- Architecture left sidebar (<details open>) -------------------- */
+.left-sidebar {
+  position: sticky;
+  top: calc(var(--header-h) + 1.5rem);
+  align-self: start;
+  height: fit-content;
+  padding: 0;
+  background: transparent;
+  border-right: 1px solid var(--border);
+}
+.left-sidebar > summary {
+  display: none;
+  list-style: none;
+}
+.left-sidebar > summary::-webkit-details-marker { display: none; }
+.left-sidebar > nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-right: 1rem;
+}
+.left-sidebar .sidebar-label {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+  font-weight: 800;
+}
+.left-sidebar nav a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--fg-dim);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.left-sidebar nav a:hover,
+.left-sidebar nav a.active {
+  background: rgba(224, 172, 119, 0.10);
+  color: var(--accent);
+}
+.left-sidebar nav a.active {
+  font-weight: 700;
+  border-left: 2px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+}
+
+/* On desktop the left sidebar is a static column. Make sure clicking
+   the summary on a non-touch device doesn't accidentally collapse it. */
+@media (min-width: 701px) {
+  .left-sidebar { pointer-events: auto; }
+  .left-sidebar > summary { display: none !important; }
+}
+
+/* --- In-page section nav (some pages still use .side-nav) ---------- */
+/* Kept for compatibility with pages whose markdown still has an inline
+   <div class="side-nav"> block. After all pages are migrated this rule
+   can be removed. */
 .side-nav {
   position: sticky;
-  top: 2rem;
+  top: calc(var(--header-h) + 1.5rem);
   width: 190px;
   min-width: 190px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   padding: 10px 15px 10px 0;
-  background: transparent;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  border-left: none;
-  margin-top: 1rem;
+  border-right: 1px solid var(--border);
   height: fit-content;
 }
-
 .side-nav .nav-label {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: #e0ac77;
+  color: var(--accent);
   margin-bottom: 12px;
   font-weight: 800;
-  padding-left: 0;
-  opacity: 0.8;
+  opacity: 0.85;
 }
-
 .side-nav a {
-  color: #888;
+  color: var(--fg-dim);
   font-size: 0.85rem;
   font-weight: 500;
   padding: 6px 12px;
   border-radius: 6px;
-  transition: all 0.2s ease;
-  border-left: none;
-  margin-left: 0;
 }
-
-.side-nav a:hover, .side-nav a.active {
-  background: rgba(224, 172, 119, 0.1);
-  color: #e0ac77;
+.side-nav a:hover,
+.side-nav a.active {
+  background: rgba(224, 172, 119, 0.10);
+  color: var(--accent);
 }
-
 .side-nav a.active {
   font-weight: 700;
-  border-left: 2px solid #e0ac77;
+  border-left: 2px solid var(--accent);
   border-radius: 0 6px 6px 0;
 }
 
-/* Hide side-nav on small screens */
-@media (max-width: 1000px) {
-  .wrapper {
-    flex-direction: column;
-    align-items: center;
-  }
-  header {
-    width: 100% !important;
-    position: static !important;
-    text-align: center;
-    padding-bottom: 2rem;
-  }
-  section {
-    width: 100% !important;
-  }
-  .side-nav {
-    display: none;
-  }
-  .content-body {
-    padding-left: 0;
-  }
+/* --- Hero (home only) ---------------------------------------------- */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+  margin: 2rem 0 3rem;
 }
-
-/* --- Visual Data Flow Separator --- */
-.pipeline-arrow {
-  text-align: center;
-  margin: 2rem 0;
-  position: relative;
-  height: 40px;
+.hero h1 {
+  font-size: 2.5rem;
+  line-height: 1.15;
+  margin: 0 0 1rem;
 }
-
-.pipeline-arrow::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 100%;
-  background: linear-gradient(to bottom, transparent, #e0ac77, transparent);
+.hero .lede {
+  font-size: 1.1rem;
+  color: var(--fg-muted);
+  margin: 0 0 1.5rem;
 }
-
-.pipeline-arrow::after {
-  content: "▼";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #e0ac77;
-  font-size: 1rem;
-  padding: 5px 0;
-}
-
-/* Side-by-Side Layout for Stages */
-.side-by-side {
+.hero .hero-links {
   display: flex;
-  gap: 40px;
-  align-items: flex-start;
-  margin: 3rem 0;
-}
-
-.side-by-side .text-content {
-  flex: 1;
-}
-
-.side-by-side .text-content pre {
-  margin-top: 1rem;
-}
-
-.side-by-side .img-wrapper {
-  flex: 0 0 300px; /* Slightly wider for better visibility */
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin: 0;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
-
-.side-by-side .img-wrapper img {
-  max-width: 100%;
+.hero .hero-links a {
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  font-weight: 600;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.hero .hero-links a:hover {
+  background: rgba(224, 172, 119, 0.10);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.hero .hero-links a.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+.hero .hero-links a.primary:hover {
+  background: var(--accent-hot);
+  border-color: var(--accent-hot);
+}
+.hero-figure {
+  background: var(--bg-elev);
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-lg);
+}
+.hero-figure img {
+  width: 100%;
   height: auto;
+  display: block;
 }
 
-@media (max-width: 1200px) {
-  .side-by-side {
-    flex-direction: column;
-  }
-  .side-by-side .img-wrapper {
-    flex: 1 0 auto;
-    width: 100%;
-    box-sizing: border-box;
-    max-width: 500px;
-    margin: 0 auto;
-  }
+/* --- Results strip -------------------------------------------------- */
+/* auto-fit lets the strip re-flow when a card is conditionally hidden
+   (e.g. fmax while still "TBD") without leaving an empty grid cell. */
+.results-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0 3rem;
+}
+.results-strip .result {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.results-strip .num {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+.results-strip .denom {
+  font-size: 1rem;
+  color: var(--fg-dim);
+  font-weight: 500;
+}
+.results-strip .unit {
+  font-size: 0.9rem;
+  color: var(--fg-muted);
+  font-weight: 500;
+}
+.results-strip .label {
+  font-size: 0.78rem;
+  color: var(--fg-muted);
+  line-height: 1.35;
 }
 
-/* Callouts */
+/* --- Callouts ------------------------------------------------------- */
 .callout {
   padding: 1.2rem 1.5rem;
   margin: 1.5rem 0;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
   border-left-width: 6px;
 }
+.callout .title {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: var(--fg);
+}
+.callout.tip  { border-left-color: #4ec3b8; }
+.callout.warn { border-left-color: #e4a657; }
+.callout.note { border-left-color: var(--accent); }
 
-/* Code Blocks */
+/* --- Code blocks ---------------------------------------------------- */
 .highlight pre {
-  padding: 1.5rem;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background-color: #141414 !important;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--bg-code) !important;
   margin: 1.5rem 0;
+  overflow-x: auto;
+}
+:not(pre) > code {
+  background: rgba(255, 255, 255, 0.07);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.92em;
 }
 
-/* Image Styling */
+/* --- Rouge syntax theme -------------------------------------------- */
+/* Warm-zinc + tan palette to fit the rest of the site. Covers SystemVerilog,
+   Verilog, Bash, TCL, and YAML tokens (the languages used across the docs). */
+.highlight {
+  color: var(--fg);
+  background: var(--bg-code);
+}
+.highlight .c,  .highlight .ch, .highlight .cm, .highlight .c1,
+.highlight .cp, .highlight .cpf, .highlight .cs, .highlight .cd { color: #6a6a6a; font-style: italic; }
+.highlight .err  { color: #ff6b6b; }
+.highlight .k,  .highlight .kc, .highlight .kd, .highlight .kn,
+.highlight .kp, .highlight .kr { color: #e0ac77; }
+.highlight .kt { color: #f0c080; font-weight: 600; }
+.highlight .o,  .highlight .ow { color: #cccccc; }
+.highlight .p  { color: #cccccc; }
+.highlight .gd { color: #ff6b6b; background-color: rgba(255, 107, 107, 0.08); }
+.highlight .gi { color: #b3d68a; background-color: rgba(179, 214, 138, 0.08); }
+.highlight .gu { color: #f0c080; font-weight: 600; }
+.highlight .gh { color: #f0c080; font-weight: 700; }
+.highlight .ge { font-style: italic; }
+.highlight .gs { font-weight: 700; }
+.highlight .gr { color: #ff6b6b; }
+.highlight .gp { color: #6a6a6a; }
+.highlight .l,  .highlight .ld { color: #f5b88f; }
+.highlight .m,  .highlight .mb, .highlight .mf, .highlight .mh,
+.highlight .mi, .highlight .il, .highlight .mo { color: #f5b88f; }
+.highlight .s,  .highlight .sa, .highlight .sb, .highlight .sc,
+.highlight .dl, .highlight .sd, .highlight .s2, .highlight .se,
+.highlight .sh, .highlight .si, .highlight .sx, .highlight .sr,
+.highlight .s1, .highlight .ss { color: #b3d68a; }
+.highlight .n   { color: var(--fg); }
+.highlight .na  { color: #f5d6a8; }                         /* attribute */
+.highlight .nb  { color: #e08070; }                         /* builtin */
+.highlight .nc  { color: #f0c080; font-weight: 600; }       /* class */
+.highlight .no  { color: #e08070; }                         /* constant */
+.highlight .nd  { color: #f5d6a8; }                         /* decorator */
+.highlight .ni  { color: #e08070; }                         /* entity */
+.highlight .ne  { color: #ff6b6b; font-weight: 600; }       /* exception */
+.highlight .nf  { color: #f5d6a8; }                         /* function */
+.highlight .nl  { color: #e0ac77; }                         /* label */
+.highlight .nn  { color: #f0c080; font-weight: 600; }       /* namespace */
+.highlight .nt  { color: #e0ac77; }                         /* tag */
+.highlight .nv, .highlight .vc, .highlight .vg, .highlight .vi { color: var(--fg); }
+.highlight .nx  { color: var(--fg); }                       /* "other name" */
+.highlight .w   { color: var(--fg); }                       /* whitespace */
+
+/* --- Images & figures ---------------------------------------------- */
 .img-wrapper {
   margin: 2.5rem 0;
   text-align: center;
   display: block;
   clear: both;
 }
-
 .img-wrapper img {
   display: block;
   margin: 0 auto;
-  cursor: zoom-in;
-  transition: all 0.4s ease;
   max-width: 100%;
+  cursor: zoom-in;
+  transition: transform 0.3s ease;
 }
-
+.img-wrapper img:hover { transform: scale(1.01) translateY(-2px); }
 .img-wrapper .caption {
   display: block;
   margin-top: 1rem;
-  color: #888;
+  color: var(--fg-dim);
   font-style: italic;
   font-size: 0.85rem;
 }
-
-.img-wrapper.thumbnail img {
-  max-width: 75%;
+.img-wrapper.thumbnail img { max-width: 75%; }
+.img-wrapper.screenshot {
+  background: var(--bg-elev);
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-soft);
 }
 
-.img-wrapper img:hover {
-  transform: scale(1.01) translateY(-3px);
+/* Side-by-side layout (text + image) used on some architecture pages.
+   minmax(0, 1fr) lets the text column shrink below its intrinsic content
+   width so wide <pre> blocks scroll internally instead of pushing the
+   right column off-canvas. */
+.side-by-side {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 2rem;
+  align-items: start;
+  margin: 2.5rem 0;
+}
+.side-by-side .img-wrapper {
+  margin: 0;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Hazard Table Styling */
+/* --- Figure placeholder (asset pending) ---------------------------- */
+/* Used where an SVG hasn't been rendered yet. Matches the rough visual
+   footprint of the stage diagrams so layout doesn't shift when the real
+   asset is dropped in. */
+.figure-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  aspect-ratio: 6 / 5;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.02),
+    rgba(255, 255, 255, 0.02) 10px,
+    rgba(255, 255, 255, 0.05) 10px,
+    rgba(255, 255, 255, 0.05) 20px
+  );
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius);
+  color: var(--fg-muted);
+  padding: 1.5rem;
+  text-align: center;
+}
+.figure-placeholder .placeholder-tag {
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 800;
+}
+.figure-placeholder .placeholder-detail {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+/* --- Tables --------------------------------------------------------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.92rem;
+}
+th, td {
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+th {
+  font-weight: 700;
+  color: var(--fg);
+  border-bottom-color: var(--accent);
+}
 .hazard-table {
   border: 1px solid rgba(224, 172, 119, 0.3);
-  border-radius: 12px;
+  border-radius: var(--radius);
   overflow: hidden;
   margin: 2rem 0;
 }
+.hazard-table table { margin: 0; }
 
-.hazard-table table {
-  margin: 0;
+/* --- WaveDrom (dark-theme inversion) -------------------------------- */
+/* WaveDrom renders SVG inside <div id="WaveDrom_Display_N"> at runtime
+   (script[type="WaveDrom"] is replaced/wrapped, not a sibling), so target
+   the wrapper. Invert + hue-rotate keeps the light-theme palette legible
+   on dark bg; contrast bump preserves the colored highlight strokes. */
+.wavedrom svg,
+div[id^="WaveDrom_Display_"] svg {
+  filter: invert(1) hue-rotate(180deg) contrast(1.2);
+  background-color: transparent !important;
+  max-width: 100%;
+}
+div[id^="WaveDrom_Display_"] {
+  overflow-x: auto;
 }
 
-/* Lightbox adjustment for wide layout */
+/* --- Pipeline arrow visual separator ------------------------------- */
+.pipeline-arrow {
+  text-align: center;
+  margin: 2rem 0;
+  position: relative;
+  height: 40px;
+}
+.pipeline-arrow::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+}
+.pipeline-arrow::after {
+  content: "▼";
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--accent);
+  font-size: 1rem;
+}
+
+/* --- Lightbox ------------------------------------------------------- */
 .lightbox-overlay {
   display: none;
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  inset: 0;
   background: rgba(0, 0, 0, 0.88);
   z-index: 9999;
   justify-content: center;
@@ -411,11 +595,12 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
   cursor: zoom-out;
 }
-
-.lightbox-overlay.active {
-  display: flex;
+.lightbox-overlay.active { display: flex; }
+.lightbox-overlay img {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
 }
-
 .lightbox-close {
   position: absolute;
   top: 1rem;
@@ -426,11 +611,7 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1;
   opacity: 0.7;
 }
-
-.lightbox-close:hover {
-  opacity: 1;
-}
-
+.lightbox-close:hover { opacity: 1; }
 .lightbox-caption {
   color: #aaa;
   font-style: italic;
@@ -440,135 +621,99 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 80vw;
 }
 
-body > header,
-body > .wrapper > header {
-  overflow: visible !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  padding-bottom: 20px !important;
+/* --- Footer --------------------------------------------------------- */
+.site-footer {
+  text-align: center;
+  color: var(--fg-dim);
+  font-size: 0.85rem;
+  padding: 2rem 1rem 3rem;
+  border-top: 1px solid var(--border);
 }
 
-body > header h1,
-body > .wrapper > header h1 {
-  font-size: 1.15rem !important;
-  line-height: 1.4 !important;
-  margin-top: 0 !important;
-  word-break: break-word !important;
-  white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-}
-
-body > header p,
-body > .wrapper > header p {
-  font-size: 0.85rem !important;
-  word-break: break-word !important;
-  white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-  line-height: 1.4 !important;
-}
-
-/* --- Final fix: prevent Midnight theme header clipping --- */
-html, body {
-  overflow-x: hidden;
-}
-
-body > .wrapper {
-  overflow: visible !important;
-  align-items: flex-start !important;
-}
-
-/* Force header to fully expand and not clip title/description */
-body > .wrapper > header,
-body > header {
-  position: sticky !important;
-  top: 1.5rem !important;
-  align-self: flex-start !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  overflow: visible !important;
-  clip-path: none !important;
-}
-
-/* Ensure text can wrap instead of being visually cut */
-body > .wrapper > header h1,
-body > .wrapper > header p,
-body > header h1,
-body > header p {
-  display: block !important;
-  white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-  overflow-wrap: anywhere !important;
-  word-break: break-word !important;
-}
-
-/* --- Final sidebar header fix --- */
-body .wrapper {
-  display: flex !important;
-  align-items: flex-start !important;
-  gap: 40px !important;
-  overflow: visible !important;
-}
-
-body .wrapper > header {
-  position: sticky !important;
-  top: 2rem !important;
-  align-self: flex-start !important;
-  flex: 0 0 280px !important;
-  width: 280px !important;
-  height: fit-content !important;
-  min-height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-  float: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-body .wrapper > header h1,
-body .wrapper > header p,
-body .wrapper > header .view,
-body .wrapper > header ul {
-  display: block !important;
-  width: 100% !important;
-  max-width: none !important;
-  height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-  white-space: normal !important;
-  text-overflow: clip !important;
-  overflow-wrap: anywhere !important;
-  word-break: break-word !important;
-}
-
-body .wrapper > section {
-  flex: 1 1 auto !important;
-  width: auto !important;
-  max-width: none !important;
-  float: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-@media (max-width: 1000px) {
-  body .wrapper {
-    flex-direction: column !important;
-    gap: 24px !important;
-    padding: 0 20px !important;
+/* =====================================================================
+   Mobile (<= 700px)
+   - Top nav wraps under the brand
+   - Single-column layout, sidebar stacks above content
+   - <details> sidebar collapses to a summary toggle
+   - Hero stacks
+   - Results strip drops to 2 columns then 1
+   ===================================================================== */
+@media (max-width: 700px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem 1rem;
+    min-height: 0;
+  }
+  .top-nav {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 2px;
+  }
+  .top-nav a {
+    font-size: 0.82rem;
+    padding: 6px 10px;
   }
 
-  body .wrapper > header {
-    position: static !important;
-    width: 100% !important;
-    flex: 1 1 auto !important;
-    text-align: center !important;
+  .layout {
+    padding: 1.25rem 1rem 3rem;
+    gap: 1.5rem;
+  }
+  body.has-sidebar .layout {
+    grid-template-columns: 1fr;
   }
 
-  body .wrapper > section {
-    width: 100% !important;
+  .left-sidebar {
+    position: static;
+    border-right: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-elev);
   }
+  .left-sidebar > summary {
+    display: list-item;
+    list-style: none;
+    cursor: pointer;
+    padding: 0.5rem 0.25rem;
+    font-weight: 600;
+    color: var(--fg);
+  }
+  .left-sidebar > summary::before {
+    content: "▸";
+    display: inline-block;
+    margin-right: 0.5rem;
+    color: var(--accent);
+    transition: transform 0.15s ease;
+  }
+  .left-sidebar[open] > summary::before { transform: rotate(90deg); }
+  .left-sidebar > nav {
+    padding: 0.25rem 0 0.5rem;
+  }
+  .left-sidebar .sidebar-label {
+    display: inline;
+    letter-spacing: 1px;
+    margin: 0;
+    font-size: 0.8rem;
+    text-transform: none;
+    color: var(--fg);
+    font-weight: 600;
+  }
+
+  .side-nav {
+    display: none; /* in-page TOCs hidden on mobile; anchors still work */
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin: 1rem 0 2rem;
+  }
+  .hero h1 { font-size: 1.8rem; }
+
+  .side-by-side {
+    grid-template-columns: 1fr;
+  }
+  /* .results-strip column count is governed by auto-fit/minmax above;
+     no explicit mobile override needed. */
 }
