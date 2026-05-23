@@ -1,89 +1,81 @@
-# riscv-5: A Pipelined Processor (RV32I)
+# riscv-5
+
+A 5-stage pipelined RISC-V core (RV32I) written in SystemVerilog, verified against the RISCOF compliance suite, and running on a Xilinx Zynq-7000 FPGA.
 
 [![CI Status](https://github.com/cshieldsce/riscv-5/actions/workflows/ci.yml/badge.svg)](https://github.com/cshieldsce/riscv-5/actions/workflows/ci.yml)
 [![Compliance Status](https://github.com/cshieldsce/riscv-5/actions/workflows/compliance.yml/badge.svg)](https://github.com/cshieldsce/riscv-5/actions/workflows/compliance.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gray.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://cshieldsce.github.io/riscv-5/)
 
-A synthesizable 5-stage pipelined RISC-V core (RV32I) implemented in SystemVerilog, featuring integrated hazard detection, data forwarding, and formal verification via the RISCOF framework.
-
----
-
-## Design Overview
-
 ![Complete Pipelined Datapath](docs/images/pipeline_complete.svg)
-*5-stage pipeline with integrated forwarding unit and hazard detection*
 
+## What this is
 
-### Key Features
+The classic Patterson & Hennessy 5-stage pipeline (IF, ID, EX, MEM, WB), with full forwarding, load-use stalling, and early branch resolution for JAL. Passes all 482 RISCOF RV32I compliance tests against Spike. Synthesizes on a PYNQ-Z2 at 10 MHz with positive slack, using 1972 LUTs (3.7% of the Zynq-7000) and 3326 flip-flops. The full design fits comfortably with room to spare for caches or peripherals.
 
-- **5-Stage Pipeline:** IF → ID → EX → MEM → WB stages with pipeline registers
-- **Data Forwarding:** Resolves RAW hazards via EX→EX and MEM→EX bypass paths
-- **Load-Use Stalls:** Automatic bubble insertion for unavoidable data hazards
-- **ISA Compliance:** 100% pass rate on RISC-V Architectural Test Suite (RISCOF)
-- **FPGA-Ready:** Synthesized and verified on Xilinx PYNQ-Z2 (Zynq-7000)
+## What's not there
 
----
+I scoped this to RV32I and stopped. No M extension (no hardware multiply or divide), no CSRs (SYSTEM and FENCE decode as NOPs), no caches, no exception or interrupt handling. Memory is a single flat region with a memory-mapped LED register at `0x8000_0000` and a `tohost` test-completion address at `0x8000_1000`.
 
 ## Documentation
 
-**[Full Documentation Site →](https://cshieldsce.github.io/riscv-5/)**
+**[Full documentation site →](https://cshieldsce.github.io/riscv-5/)**
 
-Comprehensive technical documentation including:
-- **[Architecture Manual](https://cshieldsce.github.io/riscv-5/architecture/manual.html)** - Theoretical foundations and design rationale
-- **[Pipeline Stages](https://cshieldsce.github.io/riscv-5/architecture/stages.html)** - Microarchitectural implementation details
-- **[Hazard Resolution](https://cshieldsce.github.io/riscv-5/architecture/hazards.html)** - Forwarding logic and stall mechanisms
-- **[Verification Report](https://cshieldsce.github.io/riscv-5/verification/report.html)** - ISA compliance testing and results
-- **[Developer Guide](https://cshieldsce.github.io/riscv-5/developer/guide.html)** - Setup instructions and workflow
+- [Architecture overview](https://cshieldsce.github.io/riscv-5/architecture/) — datapath, pipeline diagram, design tradeoffs
+- [Pipeline stages](https://cshieldsce.github.io/riscv-5/architecture/stages/) — per-stage RTL with explanations
+- [Hazards & forwarding](https://cshieldsce.github.io/riscv-5/architecture/hazards/) — timing diagrams for every hazard case
+- [Verification](https://cshieldsce.github.io/riscv-5/verification/) — RISCOF results and a bring-up postmortem
+- [FPGA](https://cshieldsce.github.io/riscv-5/fpga/) — synthesis numbers, timing closure, hardware demo
+- [Setup](https://cshieldsce.github.io/riscv-5/setup/) — toolchain install and build instructions
 
----
+## Quick start
 
-## Quick Start
 ```bash
-# 1. Install dependencies
+# Install dependencies (Ubuntu/Fedora)
 sudo apt-get install -y iverilog gtkwave python3-pip git gcc-riscv64-unknown-elf
 pip3 install riscof
 
-# 2. Clone and setup project
+# Clone and bootstrap
 git clone https://github.com/cshieldsce/riscv-5.git
 cd riscv-5
 ./setup_project.sh
 
-# 3. Run compliance tests
+# Run the compliance suite
 ./test/verification/run_compliance.sh
 ```
----
 
-## Project Structure
+Full setup instructions: [Setup page](https://cshieldsce.github.io/riscv-5/setup/).
 
-```text
-riscv-5/
-├── src/                    # SystemVerilog RTL
-│   ├── pipelined_cpu.sv    # Top-level module
-│   ├── control_unit.sv     # Instruction decoder
-│   ├── hazard_unit.sv      # Stall/flush logic
-│   └── forwarding_unit.sv  # Bypass control
-├── test/
-│   ├── verification/       # RISCOF compliance framework
-│   ├── mem/                # Hex memory test files
-│   ├── tb/                 # SystemVerilog testbenches
-│   └── scripts/            # Automation scripts
-├── fpga/
-│   ├── constraints/        # XDC timing constraints
-│   └── build.tcl           # Vivado synthesis script
-├── docs/                   # GitHub Pages documentation
-│   ├── architecture/       # Design documentation
-│   ├── verification/       # Test reports
-│   └── images/             # Datapath diagrams
-└── .github/workflows/      # CI/CD automation
+## Project layout
+
 ```
----
+riscv-5/
+├── src/                  # SystemVerilog RTL
+│   ├── pipelined_cpu.sv  # top-level CPU
+│   ├── if_stage.sv       # IF, ID, EX, MEM, WB modules
+│   ├── id_stage.sv
+│   ├── ex_stage.sv
+│   ├── mem_stage.sv
+│   ├── wb_stage.sv
+│   ├── control_unit.sv   # instruction decoder
+│   ├── hazard_unit.sv    # stall / flush logic
+│   ├── forwarding_unit.sv
+│   └── pynq_z2_top.sv    # board top-level
+├── test/
+│   ├── verification/     # RISCOF compliance plugins + runner
+│   ├── tb/               # SystemVerilog testbenches
+│   ├── mem/              # .mem hex images for tests
+│   └── scripts/          # lint + regression
+├── fpga/                 # Vivado project scripts + XDC
+└── docs/                 # Jekyll source for the docs site
+```
 
 ## References
 
-This project implements a cycle-accurate RISC-V processor that adheres to the RV32I unprivileged ISA specification. The project also follows the architectural patterns from *Patterson & Hennessy* while incorporating some modern hazard mitigation techniques.
-
-- [RISC-V ISA Specification v2.2](https://riscv.org/technical/specifications/)
-- *Computer Organization and Design: The Hardware/Software Interface (RISC-V Edition)* - Patterson & Hennessy
+- [RISC-V Unprivileged ISA Specification](https://riscv.org/technical/specifications/) (v20191213)
+- Patterson & Hennessy, *Computer Organization and Design: The Hardware/Software Interface (RISC-V Edition)*, chapter 4
 - [RISC-V Architectural Test Suite](https://github.com/riscv-non-isa/riscv-arch-test)
----
+
+## License
+
+MIT — see [LICENSE](LICENSE).
