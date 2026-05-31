@@ -9,6 +9,10 @@ A 5-stage pipelined RISC-V core (RV32I) written in SystemVerilog, verified again
 
 ![Complete Pipelined Datapath](docs/images/pipeline_complete.svg)
 
+![PYNQ-Z2 running the Fibonacci test program; LEDs cycle through 1, 2, 3, 5, 8, 13, 21, 34](docs/images/fpga-fib-test-demo.gif)
+
+*The core running a Fibonacci program on a PYNQ-Z2. The four LEDs show successive terms, wrapping modulo 16 once values exceed 15.*
+
 ## What this is
 
 The classic Patterson & Hennessy 5-stage pipeline (IF, ID, EX, MEM, WB), with full forwarding, load-use stalling, and early branch resolution for JAL. Passes all 482 RISCOF RV32I compliance tests against Spike. Synthesizes on a PYNQ-Z2 at 10 MHz with positive slack, using 1972 LUTs (3.7% of the Zynq-7000) and 3326 flip-flops. The full design fits comfortably with room to spare for caches or peripherals.
