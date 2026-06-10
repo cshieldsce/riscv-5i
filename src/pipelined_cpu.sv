@@ -13,7 +13,6 @@ import riscv_pkg::*;
  *          Features:
  *          - Full forwarding (EX-to-EX, MEM-to-EX, WB-to-MEM)
  *          - Hazard detection (Load-Use stalls, Control hazards/flushes)
- *          - Dynamic branch prediction (assuming branch not taken, flushing on misprediction)
  *          - Memory-Mapped I/O support via Data Memory interface
  * 
  * @param clk        System Clock
