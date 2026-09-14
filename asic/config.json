@@ -5,6 +5,7 @@
     "CLOCK_PERIOD": 26,
     "PDK": "sky130A",
     "FP_CORE_UTIL": 40,
-    "PL_TARGET_DENSITY_PCT": 50,
-    "SYNTH_HIERARCHY_MODE": "flatten"
+    "PL_TARGET_DENSITY_PCT": 45,
+    "SYNTH_HIERARCHY_MODE": "flatten",
+    "DEFAULT_CORNER": "nom_ss_100C_1v60"
 }
