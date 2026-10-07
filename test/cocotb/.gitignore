@@ -1,0 +1,8 @@
+# cocotb build output and results
+sim_build_*/
+results_*.xml
+__pycache__/
+
+# Verilator coverage
+coverage_*.dat
+coverage/

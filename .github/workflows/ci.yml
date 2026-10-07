@@ -43,3 +43,31 @@ jobs:
         echo "Running lui_test.mem..."
         vvp sim.out +TEST=test/mem/lui_test.mem | grep "STATUS: PASS"
         echo "Basic tests verified successfully."
+
+  cocotb-unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install Icarus Verilog and cocotb
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y iverilog
+        pip install "cocotb~=2.1"
+
+    - name: Run ALU Testbench
+      run: |
+        cd test/cocotb
+        make alu SIM=icarus
+
+    - name: Run HazardUnit Testbench
+      run: |
+        cd test/cocotb
+        make hazard SIM=icarus
