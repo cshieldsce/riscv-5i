@@ -7,8 +7,10 @@ from cocotb.clock import Clock
 from cocotb.triggers import ReadOnly, RisingEdge, Timer
 
 NOP = 0x0000_0013
+CLEAN_WORDS = 256   # data RAM words at DATA_BASE put back to 0 before each program
 TOHOST_ADDR = 0x8000_1000
 DATA_BASE = 0x0020_0000
+TOHOST_ADDR_ALIAS = (TOHOST_ADDR & 0x3F_FFFF) // 4   # DataMemory only decodes the low 22 address bits
 
 
 class Harness:
@@ -26,12 +28,16 @@ class Harness:
     def load(self, program, data=None, pad=16):
         # program goes into the instruction memory and, like the existing
         # testbench, into the data RAM too. data={addr: word} goes to RAM only.
-        # Words from the previous program are put back to NOP / 0 first.
+        # Words from the previous program are put back to NOP / 0 first, and so
+        # is the start of the data region, since the program itself stores there.
         for i in self.imem_dirty:
             self.dut.imem.rom_memory[i].value = NOP
         for i in self.ram_dirty:
             self.dut.dmem.ram_memory[i].value = 0
+        for i in range(CLEAN_WORDS):
+            self.dut.dmem.ram_memory[DATA_BASE // 4 + i].value = 0
         self.imem_dirty, self.ram_dirty = set(), set()
+        self.ram_dirty.add(TOHOST_ADDR_ALIAS)   # the tohost store lands here, see data_memory.sv
 
         for i, word in enumerate(list(program) + [NOP] * pad):
             self.dut.imem.rom_memory[i].value = word
