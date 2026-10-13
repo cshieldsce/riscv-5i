@@ -44,7 +44,7 @@ jobs:
         vvp sim.out +TEST=test/mem/lui_test.mem | grep "STATUS: PASS"
         echo "Basic tests verified successfully."
 
-  cocotb-unit-tests:
+  cocotb-icarus:
     runs-on: ubuntu-latest
 
     steps:
@@ -56,11 +56,16 @@ jobs:
       with:
         python-version: '3.12'
 
-    - name: Install Icarus Verilog and cocotb
+    - name: Install Icarus Verilog, cocotb and pytest
       run: |
         sudo apt-get update
         sudo apt-get install -y iverilog
-        pip install "cocotb~=2.1"
+        pip install "cocotb~=2.1" pytest
+
+    - name: Check the Encoder and Reference ISS
+      run: |
+        cd test/cocotb
+        make ref
 
     - name: Run ALU Testbench
       run: |
@@ -71,3 +76,134 @@ jobs:
       run: |
         cd test/cocotb
         make hazard SIM=icarus
+
+    - name: Run Pipeline Hazard and Forwarding Coverage
+      run: |
+        cd test/cocotb
+        make pipeline SIM=icarus
+
+  cocotb-verilator:
+    runs-on: ubuntu-latest
+    env:
+      VERILATOR_TAG: v5.036
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    # cocotb 2.x needs Verilator 5.036 or newer and apt has 5.020, so build the release
+    - name: Cache Verilator
+      id: cache-verilator
+      uses: actions/cache@v4
+      with:
+        path: ~/verilator
+        key: ${{ runner.os }}-verilator-${{ env.VERILATOR_TAG }}
+
+    - name: Build Verilator (if not cached)
+      if: steps.cache-verilator.outputs.cache-hit != 'true'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git autoconf flex bison help2man libfl-dev g++ make
+        git clone --depth 1 --branch $VERILATOR_TAG https://github.com/verilator/verilator
+        cd verilator
+        autoconf
+        ./configure --prefix=$HOME/verilator
+        make -j$(nproc)
+        make install
+
+    - name: Install cocotb
+      run: |
+        sudo apt-get install -y g++ make
+        pip install "cocotb~=2.1"
+        echo "$HOME/verilator/bin" >> $GITHUB_PATH
+        echo "VERILATOR_ROOT=$HOME/verilator/share/verilator" >> $GITHUB_ENV
+
+    - name: Run ALU, HazardUnit and Pipeline Testbenches
+      run: |
+        cd test/cocotb
+        make alu SIM=verilator
+        make hazard SIM=verilator
+        make pipeline SIM=verilator
+
+    - name: Line Coverage
+      run: |
+        cd test/cocotb
+        make coverage | tee coverage.txt
+        cat coverage.txt >> $GITHUB_STEP_SUMMARY
+
+  compliance-sim:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 3.9.1 is the last release with the rv32i_m/I/src layout
+    - name: Checkout RISC-V Arch Test Suite
+      uses: actions/checkout@v4
+      with:
+        repository: riscv-non-isa/riscv-arch-test
+        ref: 3.9.1
+        path: riscv-arch-test
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install Icarus Verilog, RISC-V GCC and cocotb
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y iverilog gcc-riscv64-unknown-elf
+        pip install "cocotb~=2.1" pytest
+
+    - name: Build the Tests, Run Them on the RTL and Compare Signatures
+      run: |
+        cd test/cocotb
+        make compliance ARCH_TEST=$GITHUB_WORKSPACE/riscv-arch-test SIM=icarus
+
+    - name: Publish the Pass/Fail Table
+      if: always()
+      run: |
+        echo "## RV32I compliance in simulation" >> $GITHUB_STEP_SUMMARY
+        cat test/cocotb/results_compliance.md >> $GITHUB_STEP_SUMMARY
+
+    - name: Upload Compliance Table
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: compliance-sim-table
+        path: test/cocotb/results_compliance.md
+
+  formal:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # The apt Yosys is 0.33, so SymbiYosys comes from the matching tag
+    - name: Install Yosys, SymbiYosys, z3 and sv2v
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y yosys z3 python3
+        git clone --depth 1 --branch yosys-0.33 https://github.com/YosysHQ/sby
+        sudo make -C sby install
+        curl -sSL -o sv2v.zip https://github.com/zachjs/sv2v/releases/download/v0.0.13/sv2v-Linux.zip
+        unzip sv2v.zip
+        sudo install -m755 sv2v-Linux/sv2v /usr/local/bin/sv2v
+
+    - name: Run SymbiYosys
+      run: ./formal/run.sh
+
+    - name: Upload Formal Logs
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: formal-logs
+        path: formal/build/*/logfile.txt
