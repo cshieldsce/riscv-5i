@@ -36,6 +36,10 @@ Every push to `main` triggers the full RISCOF suite and the regression testbench
 
 In addition to RISCOF, I wrote two SystemVerilog testbenches that exercise specific microarchitectural behavior the compliance suite doesn't directly target: [`test/tb/pipelined_cpu_tb.sv`](https://github.com/cshieldsce/riscv-5i/blob/main/test/tb/pipelined_cpu_tb.sv) walks structured instruction sequences through every forwarding and stall case, and [`test/tb/fib_test_tb.sv`](https://github.com/cshieldsce/riscv-5i/blob/main/test/tb/fib_test_tb.sv) runs a Fibonacci program end-to-end (the same program that drives the FPGA demo).
 
+### Next verification pass {#next-pass}
+
+A second set of checks sits next to RISCOF: an RV32I compliance run in simulation against a reference ISS, whole-pipeline hazard and forwarding coverage in cocotb, SymbiYosys checks of the forwarding unit and register file, and CI jobs for all of it on Icarus and Verilator. The compliance run found that `sb` and `sh` to a non-zero byte offset store the wrong byte lane. See [the design note and results]({{ '/verification/next-pass/' | relative_url }}).
+
 ## Postmortems {#postmortems}
 
 ### The bouncing branch {#bouncing-branch}

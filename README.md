@@ -33,6 +33,7 @@ I scoped this to RV32I and stopped. No M extension (no hardware multiply or divi
 - [Pipeline stages](https://cshieldsce.github.io/riscv-5i/architecture/stages/): per-stage RTL with explanations
 - [Hazards & forwarding](https://cshieldsce.github.io/riscv-5i/architecture/hazards/): timing diagrams for every hazard case
 - [Verification](https://cshieldsce.github.io/riscv-5i/verification/): RISCOF results and a bring-up postmortem
+- [Next verification pass](https://cshieldsce.github.io/riscv-5i/verification/next-pass/): simulation compliance table, pipeline coverage, formal checks
 - [FPGA](https://cshieldsce.github.io/riscv-5i/fpga/): synthesis numbers, timing closure, hardware demo
 - [Setup](https://cshieldsce.github.io/riscv-5i/setup/): toolchain install and build instructions
 
@@ -72,8 +73,10 @@ riscv-5i/
 ├── test/
 │   ├── verification/     # RISCOF compliance plugins + runner
 │   ├── tb/               # SystemVerilog testbenches
+│   ├── cocotb/           # cocotb benches, reference ISS, compliance run
 │   ├── mem/              # .mem hex images for tests
 │   └── scripts/          # lint + regression
+├── formal/               # SymbiYosys checks (forwarding unit, register file)
 ├── fpga/                 # Vivado project scripts + XDC
 └── docs/                 # Jekyll source for the docs site
 ```

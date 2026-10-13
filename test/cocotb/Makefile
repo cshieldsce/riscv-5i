@@ -44,7 +44,10 @@ else
     VERILOG_SOURCES = $(RTL_DIR)/riscv_pkg.sv $(RTL_DIR)/alu.sv
 endif
 
+# 'make ref' is pure Python, so it must not need a simulator
+ifneq ($(MAKECMDGOALS),ref)
 include $(shell cocotb-config --makefiles)/Makefile.sim
+endif
 
 .PHONY: alu hazard pipeline compliance ref coverage
 

@@ -1,4 +1,4 @@
 # Tests that fail on the current RTL, one per line: <test name> <reason>.
-# See docs/verification/rv32i-compliance.md#known-failures
+# See docs/verification/next-pass.md#known-failures
 sb-align-01 SB to a non-zero byte offset stores the wrong byte lane (dmem_wdata is not shifted into the lane dmem_be selects)
 sh-align-01 SH to byte offset 2 stores the wrong halfword (same cause)
