@@ -1,0 +1,24 @@
+# SymbiYosys: ForwardingUnit properties. run.sh converts the SystemVerilog with
+# sv2v first, the same way asic/convert.sh does, because Yosys can't read the
+# package imports in src/.
+[tasks]
+prove
+cover
+
+[options]
+prove: mode prove
+prove: depth 1
+cover: mode cover
+cover: depth 1
+
+[engines]
+smtbmc z3
+
+[script]
+read_verilog -formal forwarding_unit.v
+read_verilog -formal forwarding_unit_props.v
+prep -top forwarding_unit_props
+
+[files]
+build/forwarding_unit.v
+forwarding_unit_props.v

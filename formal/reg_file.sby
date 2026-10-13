@@ -1,0 +1,24 @@
+# SymbiYosys: RegFile properties (see run.sh). Bounded model check: a write
+# is stored at step 0 and read back at step 1, so depth 4 covers write,
+# read-back, a following write and a reset cycle. ABC's SAT-based bmc3 copes
+# with the 32x32 memory, z3 on the array is too slow. There is no cover task
+# for the same reason; the mutation runs in docs/verification/next-pass.md
+# show the assertions are not vacuous.
+[tasks]
+bmc
+
+[options]
+mode bmc
+depth 4
+
+[engines]
+abc bmc3
+
+[script]
+read_verilog -formal reg_file.v
+read_verilog -formal reg_file_props.v
+prep -top reg_file_props
+
+[files]
+build/reg_file.v
+reg_file_props.v
