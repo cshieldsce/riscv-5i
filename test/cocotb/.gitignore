@@ -6,3 +6,7 @@ __pycache__/
 # Verilator coverage
 coverage_*.dat
 coverage/
+
+# Compliance build output
+compliance_build/
+results_compliance.md
