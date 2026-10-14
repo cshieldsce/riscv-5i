@@ -14,7 +14,7 @@ I verified `riscv-5i` against the [RISCOF](https://riscof.readthedocs.io/) compl
 
 RISCOF runs the [official RISC-V architectural test suite](https://github.com/riscv-non-isa/riscv-arch-test) against the core under test and the [Spike](https://github.com/riscv-software-src/riscv-isa-sim) reference simulator side by side. Each test produces a signature, the two signatures are diffed, and a test passes only if the bytes match exactly. The core has no leeway to "almost" implement an instruction; the byte diff catches subtle bugs that a self-test loop would miss.
 
-The DUT and golden-model plugins for this project live under [`test/verification/compliance/`](https://github.com/cshieldsce/riscv-5i/tree/main/test/verification/compliance), and the runner is [`run_compliance.sh`](https://github.com/cshieldsce/riscv-5i/blob/main/test/verification/compliance/run_compliance.sh).
+The DUT and golden-model plugins for this project live under [`test/verification/compliance/`](https://github.com/cshieldsce/riscv-5i/tree/main/test/verification/compliance), and the runner is [`run_compliance.sh`](https://github.com/cshieldsce/riscv-5i/blob/main/test/verification/run_compliance.sh).
 
 ### Compliance matrix {#matrix}
 
